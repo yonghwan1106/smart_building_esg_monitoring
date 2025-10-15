@@ -21,24 +21,22 @@ export default function SignupPage() {
     setLoading(true)
 
     try {
-      // 1. Create auth user
+      // Create auth user with metadata (profile will be auto-created by database trigger)
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: role,
+          },
+        },
       })
 
       if (authError) throw authError
       if (!authData.user) throw new Error('User creation failed')
 
-      // 2. Create profile
-      const { error: profileError } = await supabase.from('profiles').insert({
-        id: authData.user.id,
-        full_name: fullName,
-        role: role,
-      })
-
-      if (profileError) throw profileError
-
+      // Profile is automatically created by database trigger
       router.push('/dashboard')
       router.refresh()
     } catch (error: any) {

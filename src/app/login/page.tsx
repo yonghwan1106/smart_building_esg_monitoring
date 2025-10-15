@@ -106,13 +106,24 @@ export default function LoginPage() {
             </button>
           </div>
 
-          <div className="text-sm text-center">
-            <Link
-              href="/signup"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              계정이 없으신가요? 회원가입
-            </Link>
+          <div className="text-sm text-center space-y-2">
+            <div>
+              <Link
+                href="/demo"
+                className="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                ← 데모 계정으로 빠른 체험하기
+              </Link>
+            </div>
+            <div className="text-gray-400">|</div>
+            <div>
+              <Link
+                href="/signup"
+                className="font-medium text-gray-600 hover:text-gray-500"
+              >
+                계정이 없으신가요? 회원가입
+              </Link>
+            </div>
           </div>
         </form>
       </div>

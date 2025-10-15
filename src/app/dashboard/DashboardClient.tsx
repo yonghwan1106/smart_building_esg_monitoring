@@ -15,27 +15,35 @@ type Profile = Database['public']['Tables']['profiles']['Row']
 type Building = Database['public']['Tables']['buildings']['Row']
 type Sensor = Database['public']['Tables']['sensors']['Row']
 type Alert = Database['public']['Tables']['alerts']['Row'] & {
-  sensors: { name: string; location_detail: string | null } | null
+  sensors: { name: string; location_detail: string | null; building_id: string } | null
 }
 
 interface DashboardClientProps {
   user: User
   profile: Profile | null
-  building: Building
-  sensors: Sensor[]
+  buildings: Building[]
+  initialBuildingId: string
+  allSensors: Sensor[]
   initialAlerts: Alert[]
 }
 
 export default function DashboardClient({
   user,
   profile,
-  building,
-  sensors,
+  buildings,
+  initialBuildingId,
+  allSensors,
   initialAlerts,
 }: DashboardClientProps) {
+  const [selectedBuildingId, setSelectedBuildingId] = useState(initialBuildingId)
   const [alerts, setAlerts] = useState<Alert[]>(initialAlerts)
   const router = useRouter()
   const supabase = createClient()
+
+  // Filter data by selected building
+  const building = buildings.find((b) => b.id === selectedBuildingId) || buildings[0]
+  const sensors = allSensors.filter((s) => s.building_id === selectedBuildingId)
+  const buildingAlerts = alerts.filter((a) => a.sensors?.building_id === selectedBuildingId)
 
   // Subscribe to real-time alerts
   useEffect(() => {
@@ -58,15 +66,12 @@ export default function DashboardClient({
               *,
               sensors (
                 name,
-                location_detail
+                location_detail,
+                building_id
               )
             `)
-            .in(
-              'sensor_id',
-              sensors.map((s) => s.id)
-            )
             .order('triggered_at', { ascending: false })
-            .limit(10)
+            .limit(50)
 
           if (newAlerts) {
             setAlerts(newAlerts as Alert[])
@@ -78,7 +83,7 @@ export default function DashboardClient({
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [sensors, supabase])
+  }, [supabase])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -93,9 +98,13 @@ export default function DashboardClient({
     ['DOOR_STATUS', 'ELEVATOR_STATUS', 'CHARGER_STATUS'].includes(s.type)
   )
 
-  // Count alerts by severity
-  const criticalAlerts = alerts.filter((a) => a.severity === 'CRITICAL' && a.status === 'NEW')
-  const warningAlerts = alerts.filter((a) => a.severity === 'WARNING' && a.status === 'NEW')
+  // Count alerts by severity for current building
+  const criticalAlerts = buildingAlerts.filter(
+    (a) => a.severity === 'CRITICAL' && a.status === 'NEW'
+  )
+  const warningAlerts = buildingAlerts.filter(
+    (a) => a.severity === 'WARNING' && a.status === 'NEW'
+  )
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -112,6 +121,12 @@ export default function DashboardClient({
             </div>
             <div className="flex items-center gap-4">
               <nav className="flex gap-2">
+                <Link
+                  href="/"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                >
+                  홈
+                </Link>
                 <Link
                   href="/dashboard"
                   className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-md"
@@ -150,7 +165,23 @@ export default function DashboardClient({
         {/* Building Info & Map */}
         <div className="mb-8">
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">담당 빌딩</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">담당 빌딩</h2>
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-600">빌딩 선택:</label>
+                <select
+                  value={selectedBuildingId}
+                  onChange={(e) => setSelectedBuildingId(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  {buildings.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
                 <h3 className="text-xl font-bold text-gray-900">{building.name}</h3>
@@ -205,10 +236,7 @@ export default function DashboardClient({
 
           {/* Right Column - Alerts Feed */}
           <div className="lg:col-span-1">
-            <AlertsFeed
-              alerts={alerts}
-              onRefresh={() => router.refresh()}
-            />
+            <AlertsFeed alerts={buildingAlerts} onRefresh={() => router.refresh()} />
           </div>
         </div>
       </main>

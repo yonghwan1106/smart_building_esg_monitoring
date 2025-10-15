@@ -12,12 +12,20 @@ export default function Home() {
               <h1 className="text-3xl font-bold text-indigo-600">BEMO Platform</h1>
               <p className="text-sm text-gray-600">Building ESG Monitoring Officer</p>
             </div>
-            <Link
-              href="/login"
-              className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-            >
-              로그인
-            </Link>
+            <div className="flex gap-3">
+              <Link
+                href="/demo"
+                className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
+              >
+                데모 체험
+              </Link>
+              <Link
+                href="/login"
+                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+              >
+                로그인
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -43,10 +51,16 @@ export default function Home() {
 
         <div className="flex justify-center gap-4 mb-16">
           <Link
+            href="/demo"
+            className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg shadow-lg"
+          >
+            데모 체험하기 →
+          </Link>
+          <Link
             href="/login"
             className="px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold text-lg"
           >
-            시작하기
+            로그인
           </Link>
           <a
             href="#features"
@@ -69,6 +83,128 @@ export default function Home() {
           <div className="bg-white rounded-xl shadow-md p-6 text-center">
             <div className="text-4xl font-bold text-purple-600 mb-2">100+</div>
             <div className="text-gray-600">3년 내 일자리 목표</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Disability Employment Focus */}
+      <section className="bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-2 bg-purple-600 text-white rounded-full text-sm font-bold mb-4">
+              중증장애인 고용 확대 핵심 솔루션
+            </span>
+            <h3 className="text-4xl font-extrabold text-gray-900 mb-4">
+              재택에서 전문가로 일하는<br />중증장애인 모니터링 요원
+            </h3>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              이동 제약이 있어도, 데이터로 빌딩을 관리하는<br />
+              <span className="font-bold text-indigo-600">안정적이고 전문적인 일자리</span>
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {/* Remote Work */}
+            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow border-t-4 border-purple-500">
+              <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                <span className="text-3xl">🏠</span>
+              </div>
+              <h4 className="text-xl font-bold text-gray-900 mb-3 text-center">완전 재택근무</h4>
+              <ul className="space-y-2 text-gray-600 text-sm">
+                <li className="flex items-start">
+                  <span className="mr-2 text-purple-600">✓</span>
+                  <span>출퇴근 부담 ZERO - 집에서 전문가로 근무</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-purple-600">✓</span>
+                  <span>장애 정도에 관계없이 동등한 기회</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-purple-600">✓</span>
+                  <span>지체/뇌병변 중증장애인에게 최적화</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Professional Role */}
+            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow border-t-4 border-indigo-500">
+              <div className="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                <span className="text-3xl">📊</span>
+              </div>
+              <h4 className="text-xl font-bold text-gray-900 mb-3 text-center">전문성 발휘</h4>
+              <ul className="space-y-2 text-gray-600 text-sm">
+                <li className="flex items-start">
+                  <span className="mr-2 text-indigo-600">✓</span>
+                  <span>실시간 IoT 센서 데이터 모니터링</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-indigo-600">✓</span>
+                  <span>이상 패턴 분석 및 조치 판단</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-indigo-600">✓</span>
+                  <span>AI 보조로 정확한 의사결정 지원</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Career Growth */}
+            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow border-t-4 border-blue-500">
+              <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                <span className="text-3xl">📈</span>
+              </div>
+              <h4 className="text-xl font-bold text-gray-900 mb-3 text-center">커리어 성장</h4>
+              <ul className="space-y-2 text-gray-600 text-sm">
+                <li className="flex items-start">
+                  <span className="mr-2 text-blue-600">✓</span>
+                  <span>ESG 데이터 분석가로 성장 가능</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-blue-600">✓</span>
+                  <span>빌딩 에너지 관리 전문가 인증 취득</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="mr-2 text-blue-600">✓</span>
+                  <span>경력에 따른 급여 상승 체계</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-xl p-8">
+            <h4 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+              중증장애인 모니터링 요원의 하루
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-2xl">🌅</span>
+                </div>
+                <p className="font-semibold text-gray-900 mb-1">오전 9시</p>
+                <p className="text-sm text-gray-600">집에서 PC로 근무 시작<br />빌딩 센서 상태 점검</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-2xl">🚨</span>
+                </div>
+                <p className="font-semibold text-gray-900 mb-1">오전 10시</p>
+                <p className="text-sm text-gray-600">자동문 고장 알림 수신<br />긴급 작업지시서 발행</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-2xl">📊</span>
+                </div>
+                <p className="font-semibold text-gray-900 mb-1">오후 2시</p>
+                <p className="text-sm text-gray-600">전력 사용 패턴 분석<br />에너지 절감 제안</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-2xl">📝</span>
+                </div>
+                <p className="font-semibold text-gray-900 mb-1">오후 5시</p>
+                <p className="text-sm text-gray-600">일일 모니터링 보고서<br />작성 및 제출</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -306,16 +442,16 @@ export default function Home() {
           </p>
           <div className="flex justify-center gap-4">
             <Link
+              href="/demo"
+              className="px-8 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold text-lg"
+            >
+              데모 체험하기 →
+            </Link>
+            <Link
               href="/login"
               className="px-8 py-3 bg-white text-indigo-600 rounded-lg hover:bg-gray-100 transition-colors font-semibold text-lg"
             >
-              플랫폼 로그인
-            </Link>
-            <Link
-              href="/signup"
-              className="px-8 py-3 bg-indigo-700 text-white border-2 border-white rounded-lg hover:bg-indigo-800 transition-colors font-semibold text-lg"
-            >
-              회원가입
+              로그인
             </Link>
           </div>
         </div>

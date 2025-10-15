@@ -133,6 +133,26 @@ export default function TicketsClient({
               </div>
             </div>
             <div className="flex items-center gap-4">
+              <nav className="flex gap-2">
+                <Link
+                  href="/"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                >
+                  홈
+                </Link>
+                <Link
+                  href="/dashboard"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                >
+                  대시보드
+                </Link>
+                <Link
+                  href="/tickets"
+                  className="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-md"
+                >
+                  작업 지시서
+                </Link>
+              </nav>
               <div className="text-right">
                 <p className="text-sm font-medium text-gray-900">{profile.full_name}</p>
                 <p className="text-xs text-gray-500">

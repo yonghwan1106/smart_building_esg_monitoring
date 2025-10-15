@@ -20,15 +20,10 @@ export default async function DashboardPage() {
     .eq('id', user.id)
     .single()
 
-  // Get building data
-  const { data: buildings } = await supabase
-    .from('buildings')
-    .select('*')
-    .limit(1)
+  // Get all buildings
+  const { data: buildings } = await supabase.from('buildings').select('*').order('name')
 
-  const building = buildings?.[0]
-
-  if (!building) {
+  if (!buildings || buildings.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p>빌딩 데이터가 없습니다. 관리자에게 문의하세요.</p>
@@ -36,36 +31,34 @@ export default async function DashboardPage() {
     )
   }
 
-  // Get sensors for the building
-  const { data: sensors } = await supabase
-    .from('sensors')
-    .select('*')
-    .eq('building_id', building.id)
+  // Get default building (user's assigned building or first one)
+  let selectedBuildingId = profile?.building_id || buildings[0].id
 
-  // Get recent alerts
-  const { data: alerts } = await supabase
+  // Get all sensors for all buildings
+  const { data: allSensors } = await supabase.from('sensors').select('*')
+
+  // Get all alerts for all sensors
+  const { data: allAlerts } = await supabase
     .from('alerts')
     .select(`
       *,
       sensors (
         name,
-        location_detail
+        location_detail,
+        building_id
       )
     `)
-    .in(
-      'sensor_id',
-      sensors?.map((s) => s.id) || []
-    )
     .order('triggered_at', { ascending: false })
-    .limit(10)
+    .limit(50)
 
   return (
     <DashboardClient
       user={user}
       profile={profile}
-      building={building}
-      sensors={sensors || []}
-      initialAlerts={alerts || []}
+      buildings={buildings}
+      initialBuildingId={selectedBuildingId}
+      allSensors={allSensors || []}
+      initialAlerts={allAlerts || []}
     />
   )
 }
