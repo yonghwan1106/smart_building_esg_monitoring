@@ -20,17 +20,7 @@ import Link from 'next/link'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Building = Database['public']['Tables']['buildings']['Row']
-type Ticket = Database['public']['Tables']['issue_tickets']['Row'] & {
-  alerts: {
-    id: string
-    title: string
-    severity: string
-    sensor_id: string
-    sensors: { name: string; location_detail: string | null } | null
-  } | null
-  profiles: { full_name: string } | null
-  assigned_to_profile: { full_name: string } | null
-}
+type Ticket = Database['public']['Tables']['issue_tickets']['Row']
 
 interface TicketsClientProps {
   user: User
@@ -263,22 +253,9 @@ export default function TicketsClient({
                             >
                               {getStatusText(ticket.status)}
                             </span>
-                            <span
-                              className={`px-2 py-1 rounded text-xs font-medium border ${getPriorityColor(
-                                ticket.priority
-                              )}`}
-                            >
-                              {ticket.priority === 'URGENT'
-                                ? '긴급'
-                                : ticket.priority === 'HIGH'
-                                ? '높음'
-                                : ticket.priority === 'MEDIUM'
-                                ? '보통'
-                                : '낮음'}
-                            </span>
-                            {ticket.alerts && (
+                            {ticket.alert_id && (
                               <span className="px-2 py-1 rounded text-xs font-medium bg-purple-100 text-purple-800">
-                                알림: {ticket.alerts.title}
+                                알림 ID: {ticket.alert_id.substring(0, 8)}...
                               </span>
                             )}
                           </div>
@@ -292,54 +269,22 @@ export default function TicketsClient({
                       </div>
 
                       {/* Description */}
-                      <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap">
-                        {ticket.description}
-                      </p>
+                      {ticket.details && (
+                        <p className="text-sm text-gray-700 mb-3 whitespace-pre-wrap">
+                          {ticket.details}
+                        </p>
+                      )}
 
-                      {/* Metadata */}
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        {ticket.profiles && (
-                          <span>
-                            <span className="font-medium">보고자:</span> {ticket.profiles.full_name}
-                          </span>
-                        )}
-                        {ticket.assigned_to_profile && (
-                          <>
-                            <span>·</span>
-                            <span>
-                              <span className="font-medium">담당자:</span>{' '}
-                              {ticket.assigned_to_profile.full_name}
-                            </span>
-                          </>
-                        )}
-                        {ticket.alerts?.sensors && (
-                          <>
-                            <span>·</span>
-                            <span>
-                              <span className="font-medium">위치:</span>{' '}
-                              {ticket.alerts.sensors.name}
-                              {ticket.alerts.sensors.location_detail &&
-                                ` (${ticket.alerts.sensors.location_detail})`}
-                            </span>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Resolved info */}
-                      {ticket.resolved_at && (
+                      {/* Closed info */}
+                      {ticket.closed_at && (
                         <div className="mt-3 p-3 bg-green-50 rounded-lg">
                           <p className="text-sm text-green-800">
-                            <span className="font-medium">해결 완료:</span>{' '}
-                            {formatDistanceToNow(new Date(ticket.resolved_at), {
+                            <span className="font-medium">종료:</span>{' '}
+                            {formatDistanceToNow(new Date(ticket.closed_at), {
                               addSuffix: true,
                               locale: ko,
                             })}
                           </p>
-                          {ticket.resolution_notes && (
-                            <p className="text-sm text-green-700 mt-1">
-                              {ticket.resolution_notes}
-                            </p>
-                          )}
                         </div>
                       )}
                     </div>

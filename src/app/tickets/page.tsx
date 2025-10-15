@@ -58,32 +58,16 @@ export default async function TicketsPage() {
 
     if (alertIds.length > 0) {
       // Get tickets for these alerts
-      const { data: ticketsData } = await supabase
+      const { data: ticketsData, error: ticketsError } = await supabase
         .from('issue_tickets')
-        .select(
-          `
-          *,
-          alerts (
-            id,
-            title,
-            severity,
-            sensor_id,
-            sensors (
-              name,
-              location_detail
-            )
-          ),
-          created_by_profile:profiles!issue_tickets_created_by_fkey (
-            full_name
-          ),
-          assigned_to_profile:profiles!issue_tickets_assigned_to_fkey (
-            full_name
-          )
-        `
-        )
+        .select('*')
         .in('alert_id', alertIds)
         .order('created_at', { ascending: false })
         .limit(50)
+
+      if (ticketsError) {
+        console.error('Error fetching tickets:', ticketsError)
+      }
 
       tickets = ticketsData || []
     }
