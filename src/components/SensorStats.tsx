@@ -96,9 +96,50 @@ export default function SensorStats({ title, sensors, buildingId }: SensorStatsP
     return `${value.toFixed(1)} ${sensor.unit || ''}`
   }
 
+  // Get gauge percentage and color for environmental sensors
+  const getGaugeData = (sensor: Sensor, value: number | undefined) => {
+    if (value === undefined) return { percentage: 0, color: 'bg-gray-300', status: '로딩 중' }
+
+    switch (sensor.type) {
+      case 'ENERGY': {
+        // Energy: 0-100 kW, optimal < 80
+        const percentage = Math.min((value / 100) * 100, 100)
+        if (value < 60) return { percentage, color: 'bg-green-500', status: '우수' }
+        if (value < 80) return { percentage, color: 'bg-yellow-500', status: '양호' }
+        return { percentage, color: 'bg-red-500', status: '높음' }
+      }
+      case 'TEMP': {
+        // Temperature: 15-30°C, optimal 20-24
+        const percentage = Math.min(((value - 15) / 15) * 100, 100)
+        if (value >= 20 && value <= 24) return { percentage, color: 'bg-green-500', status: '적정' }
+        if (value >= 18 && value <= 26) return { percentage, color: 'bg-yellow-500', status: '양호' }
+        return { percentage, color: 'bg-red-500', status: '부적정' }
+      }
+      case 'HUMIDITY': {
+        // Humidity: 0-100%, optimal 40-60
+        const percentage = value
+        if (value >= 40 && value <= 60) return { percentage, color: 'bg-green-500', status: '적정' }
+        if (value >= 30 && value <= 70) return { percentage, color: 'bg-yellow-500', status: '양호' }
+        return { percentage, color: 'bg-red-500', status: '부적정' }
+      }
+      case 'CO2': {
+        // CO2: 0-2000 ppm, optimal < 1000
+        const percentage = Math.min((value / 2000) * 100, 100)
+        if (value < 1000) return { percentage, color: 'bg-green-500', status: '우수' }
+        if (value < 1500) return { percentage, color: 'bg-yellow-500', status: '양호' }
+        return { percentage, color: 'bg-red-500', status: '높음' }
+      }
+      default:
+        return { percentage: 0, color: 'bg-gray-300', status: '-' }
+    }
+  }
+
   if (sensors.length === 0) {
     return null
   }
+
+  const isEnvironmentalSensor = (type: string) =>
+    ['ENERGY', 'TEMP', 'HUMIDITY', 'CO2'].includes(type)
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
@@ -106,12 +147,16 @@ export default function SensorStats({ title, sensors, buildingId }: SensorStatsP
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {sensors.map((sensor) => {
           const value = readings.get(sensor.id)
+          const gaugeData = isEnvironmentalSensor(sensor.type)
+            ? getGaugeData(sensor, value)
+            : null
+
           return (
             <div
               key={sensor.id}
               className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
             >
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600">
                   {getSensorIcon(sensor.type)}
                 </div>
@@ -122,9 +167,34 @@ export default function SensorStats({ title, sensors, buildingId }: SensorStatsP
                   )}
                 </div>
               </div>
-              <div className={`text-2xl font-bold ${value !== undefined ? getValueColor(sensor, value) : 'text-gray-400'}`}>
+
+              <div className={`text-2xl font-bold mb-2 ${value !== undefined ? getValueColor(sensor, value) : 'text-gray-400'}`}>
                 {value !== undefined ? formatValue(sensor, value) : '로딩 중...'}
               </div>
+
+              {/* Visual gauge for environmental sensors */}
+              {gaugeData && (
+                <div className="space-y-2">
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className={`h-2.5 rounded-full transition-all duration-500 ${gaugeData.color}`}
+                      style={{ width: `${gaugeData.percentage}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">상태</span>
+                    <span className={`text-xs font-semibold ${
+                      gaugeData.status === '우수' || gaugeData.status === '적정'
+                        ? 'text-green-600'
+                        : gaugeData.status === '양호'
+                        ? 'text-yellow-600'
+                        : 'text-red-600'
+                    }`}>
+                      {gaugeData.status}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           )
         })}

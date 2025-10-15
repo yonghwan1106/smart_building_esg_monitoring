@@ -10,6 +10,7 @@ import NaverMap from '@/components/NaverMap'
 import AlertsFeed from '@/components/AlertsFeed'
 import SensorStats from '@/components/SensorStats'
 import AIAnalysisReport from '@/components/AIAnalysisReport'
+import GovernanceStats from '@/components/GovernanceStats'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 type Building = Database['public']['Tables']['buildings']['Row']
@@ -208,13 +209,8 @@ export default function DashboardClient({
           </div>
         </div>
 
-        {/* AI Analysis Report */}
-        <div className="mb-8">
-          <AIAnalysisReport buildingId={building.id} buildingName={building.name} />
-        </div>
-
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Left Column - Sensor Stats */}
           <div className="lg:col-span-2 space-y-6">
             <SensorStats
@@ -232,12 +228,23 @@ export default function DashboardClient({
               sensors={facilitySensors}
               buildingId={building.id}
             />
+
+            <GovernanceStats
+              buildingId={building.id}
+              totalSensors={sensors.length}
+              totalAlerts={buildingAlerts.length}
+            />
           </div>
 
           {/* Right Column - Alerts Feed */}
           <div className="lg:col-span-1">
             <AlertsFeed alerts={buildingAlerts} onRefresh={() => router.refresh()} />
           </div>
+        </div>
+
+        {/* AI Analysis Report */}
+        <div className="mb-8">
+          <AIAnalysisReport buildingId={building.id} buildingName={building.name} />
         </div>
       </main>
     </div>
