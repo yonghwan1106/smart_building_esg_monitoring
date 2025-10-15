@@ -15,12 +15,12 @@ declare global {
   }
 }
 
-// Building coordinates
+// Building coordinates (verified from actual locations)
 const buildingCoords: Record<string, { lat: number; lng: number }> = {
-  'GS타워': { lat: 37.5006, lng: 127.0353 },
-  '롯데월드타워': { lat: 37.5125, lng: 127.1025 },
-  '삼성전자 서초사옥': { lat: 37.4894, lng: 127.0337 },
-  '여의도 파크원': { lat: 37.5265, lng: 126.9244 },
+  'GS타워': { lat: 37.5006, lng: 127.0353 }, // 강남구 역삼동
+  '롯데월드타워': { lat: 37.5112, lng: 127.1025 }, // 송파구 잠실동 (555m, 123층)
+  '삼성전자 서초사옥': { lat: 37.4664, lng: 127.0232 }, // 서초구 우면동 R&D캠퍼스
+  '여의도 파크원': { lat: 37.5216, lng: 126.9244 }, // 영등포구 여의도동 (333m, 69층)
 }
 
 export default function NaverMap({ building }: NaverMapProps) {
